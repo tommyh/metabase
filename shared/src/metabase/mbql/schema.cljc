@@ -473,7 +473,7 @@
   #{;; extraction functions (get some component of a given temporal value/column)
     :temporal-extract
     ;; SUGAR drivers do not need to implement
-    :get-year :get-quarter :get-month :get-day :get-day-of-week :get-hour :get-minute :get-second})
+    :get-year :get-quarter :get-month :get-week :get-day :get-day-of-week :get-hour :get-minute :get-second})
 
 (def date-arithmetic-functions
   "Functions to do math with date, datetime."
@@ -644,6 +644,9 @@
 (defclause ^{:requires-features #{:temporal-extract}} ^:sugar get-month
   date DateTimeExpressionArg)
 
+(defclause ^{:requires-features #{:temporal-extract}} ^:sugar get-week
+  date DateTimeExpressionArg)
+
 (defclause ^{:requires-features #{:temporal-extract}} ^:sugar get-day
   date DateTimeExpressionArg)
 
@@ -677,7 +680,7 @@
 (def ^:private DatetimeExpression*
   (one-of temporal-extract date-add date-subtract
           ;; SUGAR drivers do not need to implement
-          get-year get-quarter get-month get-day get-day-of-week get-hour
+          get-year get-quarter get-month get-week get-day get-day-of-week get-hour
           get-minute get-second))
 
 (def DatetimeExpression

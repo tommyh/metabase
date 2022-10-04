@@ -255,6 +255,7 @@
   {:get-year        :year
    :get-quarter     :quarter
    :get-month       :month
+   :get-week        :week
    :get-day         :day
    :get-day-of-week :day-of-week
    :get-hour        :hour

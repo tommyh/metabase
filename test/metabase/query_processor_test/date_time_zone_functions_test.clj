@@ -81,7 +81,7 @@
     (mt/test-drivers (disj (mt/normal-drivers-with-feature :temporal-extract) :mongo)
       (testing "with datetime columns"
         (doseq [[col-type field-id] [[:datetime (mt/id :times :dt)] [:text-as-datetime (mt/id :times :as_dt)]]
-                op                  [:get-year :get-quarter :get-month :get-day
+                op                  [:get-year :get-quarter :get-month :get-week :get-day
                                      :get-day-of-week :get-hour :get-minute :get-second]
                 {:keys [expected-fn query-fn]}
                 extraction-test-cases]
@@ -90,7 +90,7 @@
 
      (testing "with date columns"
        (doseq [[col-type field-id] [[:date (mt/id :times :d)] [:text-as-date (mt/id :times :as_d)]]
-               op                  [:get-year :get-quarter :get-month :get-day :get-day-of-week]
+               op                  [:get-year :get-quarter :get-month :get-week :get-day :get-day-of-week]
                {:keys [expected-fn query-fn]}
                extraction-test-cases]
         (testing (format "extract %s function works as expected on %s column for driver %s" op col-type driver/*driver*)
@@ -99,7 +99,7 @@
     (mt/test-driver :mongo
       (testing "with datetimes columns"
         (let [[col-type field-id] [:datetime (mt/id :times :dt)]]
-          (doseq [op              [:get-year :get-quarter :get-month :get-day
+          (doseq [op              [:get-year :get-quarter :get-month :get-week :get-day
                                    :get-day-of-week :get-hour :get-minute :get-second]
                   {:keys [expected-fn query-fn]}
                   extraction-test-cases]
@@ -108,7 +108,7 @@
 
       (testing "with date columns"
         (let [[col-type field-id] [:date (mt/id :times :d)]]
-          (doseq [op               [:get-year :get-quarter :get-month :get-day :get-day-of-week]
+          (doseq [op               [:get-year :get-quarter :get-month :get-week :get-day :get-day-of-week]
                   {:keys [expected-fn query-fn]}
                   extraction-test-cases]
            (testing (format "extract %s function works as expected on %s column for driver %s" op col-type driver/*driver*)
