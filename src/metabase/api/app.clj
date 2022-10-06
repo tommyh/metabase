@@ -18,8 +18,9 @@
     [toucan.db :as db]
     [toucan.hydrate :refer [hydrate]]))
 
-(defn- hydrate-details [apps]
-  (hydrate apps [:collection :can_write]))
+(defn- hydrate-details
+  [apps & additional-features]
+  (apply hydrate apps [:collection :can_write] additional-features))
 
 (defn- create-app! [{:keys [collection] :as app}]
   (db/transaction
@@ -77,7 +78,7 @@
 (api/defendpoint GET "/:id"
   "Fetch a specific App"
   [id]
-  (hydrate-details (api/read-check App id)))
+  (hydrate-details (api/read-check App id) :models))
 
 (defn- replace-scaffold-targets
   [structure scaffold-target->target-id]
