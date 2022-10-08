@@ -8,6 +8,7 @@
     [metabase.models.permissions-group :as perms-group]
     [metabase.test :as mt]
     [metabase.test.data :as data]
+    [metabase.test.initialize :as initialize]
     [toucan.db :as db]
     [toucan.hydrate :refer [hydrate]]))
 
@@ -231,3 +232,38 @@
                           list-page))
             (is (= (scaffolded-models app added-model)
                    (api-models app)))))))))
+
+(deftest imported-model-test
+  (initialize/initialize-if-needed! :web-server)
+  (mt/with-temp* [Collection [{collection-id :id}]
+                  App [app {:collection_id collection-id}]
+                  Dashboard [{dashboard-id :id} {:collection_id collection-id}]
+                  Card [model1 {:dataset true}]
+                  Card [model2 {:dataset true}]
+                  Card [model3 {:dataset true}]
+                  Card [join-card
+                        {:dataset_query
+                         {:query
+                          {:source-table (str "card__" (:id model1))
+                           :joins [{:source-table (str "card__" (:id model2))}]}}}]
+                  Card [native-card
+                        (let [mid (:id model3)
+                              mref (str "#" mid)]
+                          {:dataset_query
+                           {:type :native
+                            :native
+                            {:query (format "select * from {{%s}}" mref)
+                             :template-tags
+                             {mref
+                              {:id "853afab2-c5fd-ab80-5047-2f20f3466c8f"
+                               :name mref
+                               :display-name mref
+                               :type :card
+                               :card-id mid}}},
+                            :database 1}})]
+                  DashboardCard [_ {:dashboard_id dashboard-id
+                                    :card_id (:id join-card)}]
+                  DashboardCard [_ {:dashboard_id dashboard-id
+                                    :card_id (:id native-card)}]]
+    (is (= (normalized-models [model1 model2 model3])
+           (api-models app)))))
