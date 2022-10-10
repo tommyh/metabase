@@ -946,6 +946,7 @@ class QuestionInner {
     query,
     includeDisplayIsLocked,
     creationType,
+    dataset,
     ...options
   }: {
     originalQuestion?: Question;
@@ -953,6 +954,7 @@ class QuestionInner {
     query?: Record<string, any>;
     includeDisplayIsLocked?: boolean;
     creationType?: string;
+    dataset?: boolean;
   } = {}): string {
     const question = this.omitTransientCardIds();
 
@@ -965,6 +967,7 @@ class QuestionInner {
           clean,
           includeDisplayIsLocked,
           creationType,
+          dataset,
         }),
         query,
       });
@@ -1261,6 +1264,7 @@ class QuestionInner {
     clean = true,
     includeDisplayIsLocked = false,
     creationType,
+    dataset,
   } = {}) {
     const query = clean ? this.query().clean() : this.query();
     const cardCopy = {
